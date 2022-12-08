@@ -12,6 +12,9 @@
     --margin-xs: 10px;
     --icon-s: 24px;
     --text-small: 12px;
+    --priority-high: #db2828;
+    --priority-medium: #dd9222;
+    --priority-low: #2e90d1;
 }
 
 body {
@@ -165,7 +168,7 @@ h1 {
 }
 
 .task.overdue .date {
-    color: red;
+    color: var(--priority-high);
 }
 
 .task button {
@@ -199,4 +202,90 @@ span.date {
     position: relative;
     bottom: 2px;
 }
-/* TASK ADDER */
+
+.check-button {
+    text-align: center;
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;    
+}
+
+.check-button:hover {
+    background: none;
+    cursor: pointer;
+}
+
+.check-button.low {
+    color: var(--priority-low);
+}
+.check-button.high {
+    color: var(--priority-high);
+}
+.check-button.medium {
+    color: var(--priority-medium);
+}
+
+/* MODALS */
+form.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 12px 18px;
+    width: 400px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 6px;
+}
+
+form.modal h1 {
+    margin-bottom: 12px;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+input[type="color"] {
+    border: none;
+    margin: 0;
+    padding: 0;
+    height: 36px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+input {
+    height: 30px;
+    border: 1px solid #777;
+    padding-left: 8px;
+    border-radius: 6px;
+}
+
+.invisible {
+    display: none;
+}
+
+.modal button {
+    margin-top: 24px;
+    background-color: #999;
+    font-weight: bold;
+    color: white;
+    width: 68px;
+    height: 32px;
+    align-self: flex-end;
+    text-align: center;
+}
+
+.overlay {
+    position: fixed;
+    opacity: 0.5;
+    background-color: black; 
+    height: 100vh;
+    width: 100vw;
+}

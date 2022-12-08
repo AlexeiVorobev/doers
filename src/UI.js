@@ -1,3 +1,7 @@
+const newProjectForm = document.getElementById('new-project-modal')
+const newProjectName = document.getElementById('new-project-name')
+const newProjectColor = document.getElementById('new-project-color')
+
 import { getInboxProject, getProjects } from "./app.js";
 import { format } from "date-fns";
 
@@ -70,7 +74,7 @@ function createTask(task) {
     
     newTask.innerHTML = `
     <div class="left">
-            <button><img src="images/unchecked${getPriorityColor()}.svg" alt=""></button>
+            <button class="check-button ${task.priority}">○</button>
             <span class="title">${task.title}</span>
         </div>
         <div class="right">
@@ -82,13 +86,6 @@ function createTask(task) {
             ${task.description}
         </div>
     `
-
-    function getPriorityColor() {
-        if (task.priority === undefined) return "";
-        if (task.priority === "low") return "-blue";
-        if (task.priority === "medium") return "-orange";
-        if (task.priority === "high") return "-red";
-    }
     return newTask;
 }
 
