@@ -62,7 +62,7 @@ myProjects.push(new Project("today"));
 myProjects.push(new Project("Upcoming"));
 
 // Test projects
-myProjects.push(new Project("Project 1"));
+myProjects.push(new Project("Project 1", 'brown'));
 myProjects.push(new Project("Project 2"));
 
 // Test tasks

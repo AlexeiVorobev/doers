@@ -26,14 +26,22 @@ function createAddTaskBtn() {
     return btn;
 }
 
-function renderNavProjects() {
+function renderProjectList() {
     const projects = getProjects();
-    const projectsDiv = document.querySelector('.custom-projects');
+    const projectsContainer = document.querySelector('.custom-projects');
     for (let i = 3; i < projects.length; i++) {
         const btn = document.createElement('button');
+        btn.dataset.projectId = i;
         btn.classList.add('nav-button');
-        btn.textContent = projects[i].name;
-        projectsDiv.appendChild(btn);
+
+        const projectColor = document.createElement('span')
+        projectColor.classList.add('project-color')
+        projectColor.textContent = '●'
+        projectColor.style.color = projects[i].color;
+        
+        btn.appendChild(projectColor)
+        btn.insertAdjacentText("beforeend", projects[i].name)
+        projectsContainer.appendChild(btn);
     }
 }
 
@@ -86,6 +94,12 @@ function createTask(task) {
 
 export default function renderPage() {
     renderInbox();
-    renderNavProjects();
+    renderProjectList();
+}
+
+function clearElement(element) {
+    while(element.firstChild){
+        element.removeChild(element.firstChild);
+    }
 }
 
