@@ -196,7 +196,7 @@ span.date {
 }
 
 .project-color {
-    font-size: 32px;
+    font-size: 28px;
     display: block;
     line-height: 0;
     position: relative;
@@ -257,7 +257,7 @@ input[type="color"] {
     padding: 0;
     height: 36px;
     border-radius: 4px;
-    width: 100%;
+    width: 36px
 }
 
 input {
@@ -268,7 +268,7 @@ input {
 }
 
 .invisible {
-    display: none;
+    visibility: hidden;
 }
 
 .modal button {

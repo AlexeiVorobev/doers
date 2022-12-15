@@ -1,8 +1,7 @@
-const newProjectForm = document.getElementById('new-project-modal')
 const newProjectName = document.getElementById('new-project-name')
 const newProjectColor = document.getElementById('new-project-color')
 
-import { getInboxProject, getProjects } from "./app.js";
+import { getInboxProject, getProjects, setProject } from "./app.js";
 import { format } from "date-fns";
 
 const header = document.getElementById('main-header');
@@ -30,9 +29,10 @@ function createAddTaskBtn() {
     return btn;
 }
 
-function renderProjectList() {
+function renderProjects() {
     const projects = getProjects();
     const projectsContainer = document.querySelector('.custom-projects');
+    clearElement(projectsContainer)
     for (let i = 3; i < projects.length; i++) {
         const btn = document.createElement('button');
         btn.dataset.projectId = i;
@@ -91,7 +91,7 @@ function createTask(task) {
 
 export default function renderPage() {
     renderInbox();
-    renderProjectList();
+    renderProjects();
 }
 
 function clearElement(element) {
@@ -100,3 +100,32 @@ function clearElement(element) {
     }
 }
 
+const newProjectForm = (function () {
+    const overlay = document.querySelector('.overlay')
+    const form = document.getElementById('new-project-modal')
+    const addProjectButton = document.querySelector('.add-project-btn')
+
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+        const projectName = newProjectName.value
+        if(projectName == null || projectName == "") return;
+        const projectColor = newProjectColor.value
+    
+        setProject(projectName, projectColor)
+        renderProjects();
+        close()
+    })
+
+    overlay.onclick = close;
+
+    function close() {
+        form.reset()
+        overlay.classList.add('invisible')
+        form.classList.add('invisible')
+    }
+
+    addProjectButton.onclick = function() {
+        overlay.classList.remove('invisible')
+        form.classList.remove('invisible')
+    }
+})();
