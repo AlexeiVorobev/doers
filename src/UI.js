@@ -1,7 +1,7 @@
 const newProjectName = document.getElementById('new-project-name')
 const newProjectColor = document.getElementById('new-project-color')
 
-import { getInboxProject, getProjects, setProject } from "./app.js";
+import { getProjects, getInboxProject, setProject, save } from "./storage.js";
 import { format } from "date-fns";
 
 const header = document.getElementById('main-header');
@@ -35,7 +35,7 @@ function renderProjects() {
     clearElement(projectsContainer)
     for (let i = 3; i < projects.length; i++) {
         const btn = document.createElement('button');
-        btn.dataset.projectId = i;
+        btn.dataset.projectId = projects[i].id;
         btn.classList.add('nav-button');
 
         const projectColor = document.createElement('span')
@@ -53,7 +53,7 @@ function renderTasks(project) {
     const tasks = project.tasks;
     for (let i = 0; i < tasks.length; i++) {
         const task = createTask(tasks[i]);
-        task.setAttribute("data", i);
+        task.dataset.taskId = tasks[i].id;
         if (tasks[i].isOverdue()) {
             task.classList.add('overdue');
         }
@@ -112,6 +112,7 @@ const newProjectForm = (function () {
         const projectColor = newProjectColor.value
     
         setProject(projectName, projectColor)
+        save()
         renderProjects();
         close()
     })
