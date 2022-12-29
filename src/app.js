@@ -19,11 +19,11 @@ export class Task {
 }
 
 export class Project {
-    constructor(name, color = "#ffffff") {
+    constructor(name, color = "#ffffff", id = Date.now().toString()) {
         this.name = name;
         this.color = color;
         this.tasks = [];
-        this.id = Date.now().toString()
+        this.id = id;
     }
 
     addTask(title, description, priority, dueDate) {
@@ -33,12 +33,4 @@ export class Project {
     getTasks() {
         return this.tasks;
     }
-}
-
-export function getProjectByName(name) {
-    myProjects.forEach(project => {
-        if (project.name === name) {
-            return project;
-        }
-    })
 }

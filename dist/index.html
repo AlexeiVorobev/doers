@@ -21,23 +21,28 @@
         </div>
     </header>
     <nav>
-        <div class="standart-folders">
-            <button id="inbox-btn" class="nav-button active"><img src="images/inbox.svg" alt="">Inbox</button>
-            <button id="today-btn" class="nav-button"><img src="images/today.svg" alt="">Today</button>
-            <button id="upcoming-btn" class="nav-button"><img src="images/calendar-month.svg" alt="">Upcoming</button>
+        <div class="standart-projects">
+            <button id="inbox-btn" class="nav-button active" data-project-id="0"><img src="images/inbox.svg" alt="">Inbox</button>
+            <button id="today-btn" class="nav-button" data-project-id="1"><img src="images/today.svg" alt="">Today</button>
+            <button id="upcoming-btn" class="nav-button" data-project-id="2"><img src="images/calendar-month.svg" alt="">Upcoming</button>
         </div>
         <div class="nav-projects">
-            <h1>Projects</h1> <button class="add-project-btn"><img src="images/add.svg" alt=""></button>
+            <h1>Projects</h1> <button id="add-project-btn"><img src="images/add.svg" alt=""></button>
         </div>
         <div class="custom-projects"></div>
     </nav>
     <main>
         <div id="content">
-            <h1 id="main-header"></h1>
-
+            <div class="title-container">
+                <h1 id="project-title"></h1>
+                <button id="edit-project-btn" class="small-button"><img src="images/edit.svg" alt=""></button>
+            </div>
+            <div id="task-container"></div>
         </div>
     </main>
+
     <div class="overlay invisible"></div>
+
     <form class="modal invisible" action="" id="new-project-modal">
         <h1>Add project</h1>
         <label for="new-project-name">Name</label>
@@ -45,6 +50,16 @@
         <label for="new-project-color">Color</label>
         <input type="color" name="" id="new-project-color" value="#ffffff">
         <button type="submit">Add</button>
+    </form>
+
+    <form class="modal invisible" action="" id="edit-project-modal">
+        <h1>Edit project</h1>
+        <label for="new-project-name">Name</label>
+        <input type="text" class="new project" placeholder="new project name" id="edit-project-name">
+        <label for="edit-project-color">Color</label>
+        <input type="color" name="" id="edit-project-color" value="#ffffff">
+        <button>Delete</button>
+        <button type="submit">Save</button>
     </form>
 </body>
 

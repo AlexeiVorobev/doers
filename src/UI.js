@@ -1,16 +1,35 @@
 const newProjectName = document.getElementById('new-project-name')
 const newProjectColor = document.getElementById('new-project-color')
+const customProjectsContainer = document.querySelector('.custom-projects')
+const standartProjectsContainer = document.querySelector('.standart-projects')
+const overlay = document.querySelector('.overlay')
+const editProjectBtn = document.getElementById('edit-project-btn')
+const projectTitle = document.getElementById('project-title')
+const taskContainer = document.getElementById('task-container')
 
-import { getProjects, getInboxProject, setProject, save } from "./storage.js";
+import * as storage from "./storage.js";
 import { format } from "date-fns";
 
-const header = document.getElementById('main-header');
+const header = document.getElementById('project-title');
 const content = document.getElementById("content");
 
 export function renderInbox() {
     header.textContent = "Inbox";
-    renderTasks(getInboxProject());
+    renderTasks(storage.getInboxProject());
     content.appendChild(createAddTaskBtn());
+}
+
+function renderProject(id = storage.getSelectedProjectId()) {
+    const project = storage.getProject(id)
+
+    // Hide edit-project button if standart project is rendered
+    if (project.id in ['0', '1', '2']) {
+        editProjectBtn.classList.add('invisible')
+    } else {
+        editProjectBtn.classList.remove('invisible')
+    }
+
+    header.textContent = project.name
 }
 
 function createAddTaskBtn() {
@@ -30,22 +49,38 @@ function createAddTaskBtn() {
 }
 
 function renderProjects() {
-    const projects = getProjects();
-    const projectsContainer = document.querySelector('.custom-projects');
-    clearElement(projectsContainer)
+    const selectedProjectId = storage.getSelectedProjectId();
+    unselectStandartProjects()
+    if (selectedProjectId === "0") {
+        const btn = document.getElementById('inbox-btn')
+        btn.classList.add('active')
+    } else if (selectedProjectId === "1") {
+        const btn = document.getElementById('today-btn')
+        btn.classList.add('active')
+    } else if (selectedProjectId === "2") {
+        const btn = document.getElementById('upcoming-btn')
+        btn.classList.add('active')
+    } 
+
+    const projects = storage.getProjects();
+    clearElement(customProjectsContainer)
     for (let i = 3; i < projects.length; i++) {
+        const project = projects[i]
         const btn = document.createElement('button');
-        btn.dataset.projectId = projects[i].id;
+        btn.dataset.projectId = project.id;
         btn.classList.add('nav-button');
+        if (project.id === storage.getSelectedProjectId()) {
+            btn.classList.add('active')
+        }
 
         const projectColor = document.createElement('span')
         projectColor.classList.add('project-color')
         projectColor.textContent = '●'
         projectColor.style.color = projects[i].color;
-        
+
         btn.appendChild(projectColor)
         btn.insertAdjacentText("beforeend", projects[i].name)
-        projectsContainer.appendChild(btn);
+        customProjectsContainer.appendChild(btn);
     }
 }
 
@@ -71,7 +106,7 @@ function createTask(task) {
     const newTask = document.createElement('div');
     newTask.classList.add('task');
     const date = (task.dueDate === undefined) ? "" : formatDate(task.dueDate);
-    
+
     newTask.innerHTML = `
     <div class="left">
             <button class="check-button ${task.priority}">○</button>
@@ -90,29 +125,35 @@ function createTask(task) {
 }
 
 export default function renderPage() {
-    renderInbox();
-    renderProjects();
+    renderProjects()
+    renderProject()
+}
+
+function unselectStandartProjects() {
+    const buttons = document.querySelectorAll('.standart-projects button')
+    buttons.forEach(button => {
+        button.classList.remove('active')
+    })
 }
 
 function clearElement(element) {
-    while(element.firstChild){
+    while (element.firstChild) {
         element.removeChild(element.firstChild);
     }
 }
 
 const newProjectForm = (function () {
-    const overlay = document.querySelector('.overlay')
     const form = document.getElementById('new-project-modal')
-    const addProjectButton = document.querySelector('.add-project-btn')
+    const addProjectBtn = document.getElementById('add-project-btn')
 
     form.addEventListener('submit', e => {
         e.preventDefault()
         const projectName = newProjectName.value
-        if(projectName == null || projectName == "") return;
+        if (projectName == null || projectName == "") return;
         const projectColor = newProjectColor.value
-    
-        setProject(projectName, projectColor)
-        save()
+
+        storage.setProject(projectName, projectColor)
+        storage.save()
         renderProjects();
         close()
     })
@@ -125,8 +166,54 @@ const newProjectForm = (function () {
         form.classList.add('invisible')
     }
 
-    addProjectButton.onclick = function() {
+    addProjectBtn.onclick = function () {
         overlay.classList.remove('invisible')
         form.classList.remove('invisible')
     }
 })();
+
+const editProjectForm = (function () {
+    const form = document.getElementById('edit-project-modal')
+
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+        const projectName = newProjectName.value
+        if (projectName == null || projectName == "") return;
+        const projectColor = newProjectColor.value
+
+        storage.setProject(projectName, projectColor)
+        storage.save()
+        renderProjects();
+        close()
+    })
+
+    overlay.onclick = close;
+
+    function close() {
+        form.reset()
+        overlay.classList.add('invisible')
+        form.classList.add('invisible')
+    }
+
+    editProjectBtn.onclick = function () {
+        overlay.classList.remove('invisible')
+        form.classList.remove('invisible')
+    }
+})()
+
+customProjectsContainer.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'button') {
+        storage.setSelectedProjectId(e.target.dataset.projectId)
+        storage.save()
+        renderPage()
+    }
+})
+
+standartProjectsContainer.addEventListener('click', e => {
+    if (e.target.tagName.toLowerCase() === 'button') {
+        const id = e.target.dataset.projectId
+        storage.setSelectedProjectId(id)
+        storage.save()
+        renderPage()
+    }
+})
