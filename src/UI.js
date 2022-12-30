@@ -142,11 +142,17 @@ function clearElement(element) {
     }
 }
 
-const newProjectForm = (function () {
-    const form = document.getElementById('new-project-modal')
+const modals = (function () {
+    const newProjectModal = document.getElementById('new-project-modal')
+    const editProjectModal = document.getElementById('edit-project-modal')
     const addProjectBtn = document.getElementById('add-project-btn')
+    const editProjectBtn = document.getElementById('edit-project-btn')
+    const deleteProjectBtn = document.getElementById('delete-project-btn')
+    const saveProjectBtn = document.getElementById('save-project-btn')
+    const editProjectName = document.getElementById('edit-project-name')
+    const editProjectColor = document.getElementById('edit-project-color')
 
-    form.addEventListener('submit', e => {
+    newProjectModal.addEventListener('submit', e => {
         e.preventDefault()
         const projectName = newProjectName.value
         if (projectName == null || projectName == "") return;
@@ -158,48 +164,48 @@ const newProjectForm = (function () {
         close()
     })
 
+    editProjectModal.addEventListener('submit', e => {
+        e.preventDefault()
+    })
+
     overlay.onclick = close;
 
     function close() {
-        form.reset()
+        newProjectModal.reset()
         overlay.classList.add('invisible')
-        form.classList.add('invisible')
+        newProjectModal.classList.add('invisible')
+        editProjectModal.classList.add('invisible')
     }
 
     addProjectBtn.onclick = function () {
         overlay.classList.remove('invisible')
-        form.classList.remove('invisible')
-    }
-})();
-
-const editProjectForm = (function () {
-    const form = document.getElementById('edit-project-modal')
-
-    form.addEventListener('submit', e => {
-        e.preventDefault()
-        const projectName = newProjectName.value
-        if (projectName == null || projectName == "") return;
-        const projectColor = newProjectColor.value
-
-        storage.setProject(projectName, projectColor)
-        storage.save()
-        renderProjects();
-        close()
-    })
-
-    overlay.onclick = close;
-
-    function close() {
-        form.reset()
-        overlay.classList.add('invisible')
-        form.classList.add('invisible')
+        newProjectModal.classList.remove('invisible')
     }
 
     editProjectBtn.onclick = function () {
+        const project = storage.getProject(storage.getSelectedProjectId())
         overlay.classList.remove('invisible')
-        form.classList.remove('invisible')
+        editProjectModal.classList.remove('invisible')
+        editProjectName.value = project.name
+
+        editProjectColor.value = project.color
     }
-})()
+
+    deleteProjectBtn.onclick = function () {
+        storage.deleteProject();
+        close()
+        storage.setSelectedProjectId('0')
+        renderPage()
+    }
+
+    saveProjectBtn.onclick = function () {
+        storage.editProject(storage.getSelectedProjectId(), editProjectName.value, editProjectColor.value)
+        close()
+        renderPage()
+    }
+
+})();
+
 
 customProjectsContainer.addEventListener('click', e => {
     if (e.target.tagName.toLowerCase() === 'button') {

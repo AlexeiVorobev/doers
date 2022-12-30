@@ -4,7 +4,7 @@ import { Project } from "./app";
 const LOCAL_STORAGE_PROJECT_KEY = 'doers.projects'
 const SELECTED_PROJECT_ID_KEY = 'doers.selectedProjectId'
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || getDefaultProjects()
-let selectedProjectId = localStorage.getItem(SELECTED_PROJECT_ID_KEY) 
+let selectedProjectId = localStorage.getItem(SELECTED_PROJECT_ID_KEY)
 
 export function save() {
     localStorage.setItem(LOCAL_STORAGE_PROJECT_KEY, JSON.stringify(projects))
@@ -31,6 +31,30 @@ export function setProject(name, color) {
     projects.push(new Project(name, color));
 }
 
+export function editProject(id = getSelectedProjectId(), name, color) {
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i]
+        if (project.id === id) {
+            project.name = name
+            project.color = color
+
+            save()
+            return
+        }
+    }
+}
+
+export function deleteProject(id = getSelectedProjectId()) {
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i]
+        if (project.id === id) {
+            projects.splice(i, 1)
+            save()
+            return
+        }
+    }
+}
+
 export function getProject(id) {
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i]
@@ -38,7 +62,7 @@ export function getProject(id) {
             return project;
         }
     }
-    };
+};
 
 function getDefaultProjects() {
     const projects = []

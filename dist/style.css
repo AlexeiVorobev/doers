@@ -15,6 +15,7 @@
     --priority-high: #db2828;
     --priority-medium: #dd9222;
     --priority-low: #2e90d1;
+    --light-red: #e07d7d;
 }
 
 body {
@@ -79,6 +80,10 @@ button {
     padding-top: 6px;
     padding-bottom: 6px;
     text-align: left;
+}
+
+.modal button.special {
+    background-color: var(--light-red);
 }
 
 .nav-button {
@@ -160,6 +165,12 @@ h1 {
     width: var(--icon-s);
     pointer-events: none;
     opacity: 0.6;
+}
+
+.button-panel {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
 }
 
 /* TASKS */
