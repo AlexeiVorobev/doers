@@ -142,15 +142,15 @@ h1 {
     margin-bottom: var(--margin-s);
 }
 
-.add-task-btn {
+#add-task-btn {
     gap: 4px;
     margin-top: 16px;
     display: flex;
     align-items: center;
 }
 
-.add-task-btn {
-    width: 24px;
+#add-task-btn img {
+    width: var(--icon-s);
 }
 
 .small-button {

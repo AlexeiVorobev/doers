@@ -7,7 +7,7 @@ export class Task {
         this.priority = priority;
         this.dueDate = dueDate;
         this.completed = false;
-        this.id = newId++;
+        this.id = Date.now().toString()
     }
 
     isOverdue() {
@@ -26,11 +26,11 @@ export class Project {
         this.id = id;
     }
 
-    addTask(title, description, priority, dueDate) {
-        this.tasks.push(new Task(title, description, priority, dueDate));
+    addTask(task) {
+        this.tasks.push(task)
     }
 
-    getTasks() {
-        return this.tasks;
+    getStuff() {
+        console.log('We got stuff')
     }
 }

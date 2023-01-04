@@ -1,10 +1,23 @@
-import { Task } from "./app";
-import { Project } from "./app";
+import { Task, Project } from "./app";
 
 const LOCAL_STORAGE_PROJECT_KEY = 'doers.projects'
 const SELECTED_PROJECT_ID_KEY = 'doers.selectedProjectId'
-let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || getDefaultProjects()
+// let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || getDefaultProjects()
+let projects = (JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY))) ? loadProjects() : getDefaultProjects()
 let selectedProjectId = localStorage.getItem(SELECTED_PROJECT_ID_KEY)
+
+function loadProjects() {
+    const projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY))
+    const output = []
+    projects.forEach(project => {
+        const newProject = new Project(project.name, project.color, project.id)
+        project.tasks.forEach(task => {
+            newProject.tasks.push(new Task(task.title, task.description, task.priority, task.dueDate))
+        })
+        output.push(newProject)
+    })
+    return output;
+}
 
 export function save() {
     localStorage.setItem(LOCAL_STORAGE_PROJECT_KEY, JSON.stringify(projects))
@@ -21,10 +34,6 @@ export function setSelectedProjectId(id) {
 
 export function getProjects() {
     return projects
-}
-
-export function getInboxProject() {
-    return projects[0]
 }
 
 export function setProject(name, color) {
@@ -55,14 +64,14 @@ export function deleteProject(id = getSelectedProjectId()) {
     }
 }
 
-export function getProject(id) {
+export function getProject(id = getSelectedProjectId()) {
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i]
         if (project.id === id) {
             return project;
         }
     }
-};
+}
 
 function getDefaultProjects() {
     const projects = []
@@ -71,3 +80,13 @@ function getDefaultProjects() {
     projects.push(new Project("Upcoming", null, "2"));
     return projects
 }
+
+export function setTask(title, description, priority, dueDate) {
+    projects.forEach(project => {
+        if (project.id === getSelectedProjectId()) {
+            project.tasks.push(new Task(title, description, priority, dueDate))
+        }
+    })
+}
+
+console.log(projects)

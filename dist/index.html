@@ -38,6 +38,7 @@
                 <button id="edit-project-btn" class="small-button"><img src="images/edit.svg" alt=""></button>
             </div>
             <div id="task-container"></div>
+            <button id="add-task-btn"><img src="images/add.svg" alt="">Add task</button>
         </div>
     </main>
 
@@ -55,13 +56,40 @@
     <form class="modal invisible" action="" id="edit-project-modal">
         <h1>Edit project</h1>
         <label for="new-project-name">Name</label>
-        <input type="text" class="new project" placeholder="new project name" id="edit-project-name">
+        <input type="text" class="new project" placeholder="New project name" id="edit-project-name">
         <label for="edit-project-color">Color</label>
         <input type="color" name="" id="edit-project-color" value="#ffffff">
         <div class="button-panel">
             <button id="delete-project-btn" class="special">Delete</button>
             <button id="save-project-btn" type="submit">Save</button>
         </div>
+    </form>
+
+    <form action="" class="modal invisible" id="add-task-modal">
+        <h1>Add Task</h1>
+        <label for="new-task-name">Name</label>
+        <input type="text" placeholder="New task name" id="new-task-name">
+        <label for="new-task-description">Description</label>
+        <input type="text" id="new-task-description" placeholder="Task description">
+        <label for="new-task-date">Due date</label>
+        <input type="date" name="" id="new-task-date">
+        <label for="new-task-priority">Priority</label>
+        <select name="" id="new-task-priority">
+            <option value="null">No priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <label for="new-task-project">Project</label>
+        <select name="" id="new-task-project">
+            <option value="0">Inbox</option>
+        </select>
+
+        <div class="button-panel">
+            <button class="special" id="delete-task-btn">Delete</button>
+            <button id="save-task-btn">Save</button>
+        </div>
+
     </form>
 </body>
 

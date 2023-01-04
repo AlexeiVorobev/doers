@@ -4,22 +4,16 @@ const customProjectsContainer = document.querySelector('.custom-projects')
 const standartProjectsContainer = document.querySelector('.standart-projects')
 const overlay = document.querySelector('.overlay')
 const editProjectBtn = document.getElementById('edit-project-btn')
-const projectTitle = document.getElementById('project-title')
 const taskContainer = document.getElementById('task-container')
+const addTaskBtn = document.getElementById('add-task-btn')
 
 import * as storage from "./storage.js";
 import { format } from "date-fns";
 
 const header = document.getElementById('project-title');
-const content = document.getElementById("content");
 
-export function renderInbox() {
-    header.textContent = "Inbox";
-    renderTasks(storage.getInboxProject());
-    content.appendChild(createAddTaskBtn());
-}
-
-function renderProject(id = storage.getSelectedProjectId()) {
+function renderProject(id = storage.getSelectedProjectId() || '0') {
+    clearElement(taskContainer)
     const project = storage.getProject(id)
 
     // Hide edit-project button if standart project is rendered
@@ -30,22 +24,7 @@ function renderProject(id = storage.getSelectedProjectId()) {
     }
 
     header.textContent = project.name
-}
-
-function createAddTaskBtn() {
-    const btn = document.createElement('button');
-    btn.classList.add("add-task-btn");
-
-    const icon = document.createElement('img');
-    icon.src = "images/add.svg";
-
-    const text = document.createElement('div');
-    text.textContent = "Add task";
-
-    btn.appendChild(icon);
-    btn.appendChild(text);
-
-    return btn;
+    renderTasks()
 }
 
 function renderProjects() {
@@ -84,7 +63,8 @@ function renderProjects() {
     }
 }
 
-function renderTasks(project) {
+function renderTasks() {
+    const project = storage.getProject()
     const tasks = project.tasks;
     for (let i = 0; i < tasks.length; i++) {
         const task = createTask(tasks[i]);
@@ -92,13 +72,13 @@ function renderTasks(project) {
         if (tasks[i].isOverdue()) {
             task.classList.add('overdue');
         }
-        content.appendChild(task);
+        taskContainer.appendChild(task);
     }
 }
 
 function formatDate(dateString) {
+    if (dateString === undefined) return
     const date = new Date(dateString);
-
     return format(date, "MMM do");
 }
 
@@ -145,12 +125,14 @@ function clearElement(element) {
 const modals = (function () {
     const newProjectModal = document.getElementById('new-project-modal')
     const editProjectModal = document.getElementById('edit-project-modal')
+    const addTaskModal = document.getElementById('add-task-modal')
     const addProjectBtn = document.getElementById('add-project-btn')
     const editProjectBtn = document.getElementById('edit-project-btn')
     const deleteProjectBtn = document.getElementById('delete-project-btn')
     const saveProjectBtn = document.getElementById('save-project-btn')
     const editProjectName = document.getElementById('edit-project-name')
     const editProjectColor = document.getElementById('edit-project-color')
+    const saveTaskBtn = document.getElementById('save-task-btn')
 
     newProjectModal.addEventListener('submit', e => {
         e.preventDefault()
@@ -175,6 +157,7 @@ const modals = (function () {
         overlay.classList.add('invisible')
         newProjectModal.classList.add('invisible')
         editProjectModal.classList.add('invisible')
+        addTaskModal.classList.add('invisible')
     }
 
     addProjectBtn.onclick = function () {
@@ -204,6 +187,47 @@ const modals = (function () {
         renderPage()
     }
 
+    addTaskBtn.onclick = function () {
+        overlay.classList.remove('invisible')
+        addTaskModal.classList.remove('invisible')
+
+        renderProjectDropdown()
+    }
+
+    addTaskModal.addEventListener('submit', e => {
+        e.preventDefault()
+        const title = document.getElementById('new-task-name').value
+        const description = document.getElementById('new-task-description').value
+        const priority = document.getElementById('new-task-priority').value
+        const dueDate = document.getElementById('new-task-date').value
+        storage.setTask(title, description, priority, dueDate)
+        storage.save()
+        renderPage()
+    })
+
+    function renderProjectDropdown() {
+        const newTaskProject = document.getElementById('new-task-project')
+        clearElement(newTaskProject)
+
+        const inboxOption = document.createElement('option')
+        inboxOption.value = '0'
+        inboxOption.textContent = 'Inbox'
+        newTaskProject.appendChild(inboxOption)
+
+        const projects = storage.getProjects()
+        for (let i = 3; i < projects.length; i++) {
+            const project = projects[i]
+            const option = document.createElement('option')
+            option.value = project.id
+            option.textContent = project.name
+
+            if (project.id === storage.getSelectedProjectId()) {
+                option.setAttribute('selected', 'selected')
+            }
+            newTaskProject.appendChild(option)
+        }
+    }
+
 })();
 
 
@@ -223,3 +247,5 @@ standartProjectsContainer.addEventListener('click', e => {
         renderPage()
     }
 })
+
+
