@@ -1,13 +1,13 @@
 import { compareAsc } from "date-fns";
 
 export class Task {
-    constructor(title, description = "", priority, dueDate) {
+    constructor(title, description = "", priority, dueDate, id = Date.now().toString(), completed = false) {
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
-        this.completed = false;
-        this.id = Date.now().toString()
+        this.completed = completed;
+        this.id = id;
     }
 
     isOverdue() {

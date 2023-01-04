@@ -182,6 +182,15 @@ h1 {
     margin-bottom: 16px;
 }
 
+.task img {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.task img:hover {
+    opacity: 1;
+}
+
 .task .description {
     font-size: var(--text-small);
     color: #777;
