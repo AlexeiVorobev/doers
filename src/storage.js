@@ -136,7 +136,14 @@ export function setTask(title, description, priority, dueDate, id) {
 }
 
 export function getTask(id) {
-    const project = getProject();
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i]
+        for (let j = 0; j < project.tasks.length; j++) {
+            if (project.tasks[j].id === id) {
+                return project.tasks[j]
+            }
+        }
+    }
     return project.tasks.find((task) => task.id === id);
 }
 
@@ -156,10 +163,7 @@ export function getTodayTasks() {
 export function deleteTask(id) {
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i];
-        if (project.id === getSelectedProjectId()) {
-            project.tasks = project.tasks.filter((task) => task.id !== id);
-            return;
-        }
+        project.tasks = project.tasks.filter((task) => task.id !== id);
     }
 }
 
@@ -172,12 +176,10 @@ export function editTask(id, title, description, priority, dueDate, projectId) {
 export function toggleTaskComplete(taskId) {
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i]
-        if (project.id === getSelectedProjectId()) {
-            for (let j = 0; j < project.tasks.length; j++) {
-                const task = project.tasks[j]
-                if (task.id === taskId) {
-                    task.completed = (task.completed) ? false : true;
-                }
+        for (let j = 0; j < project.tasks.length; j++) {
+            const task = project.tasks[j]
+            if (task.id === taskId) {
+                task.completed = (task.completed) ? false : true;
             }
         }
     }
