@@ -195,8 +195,20 @@ h1 {
     font-size: var(--text-small);
     color: #777;
     grid-column: span 2;
-    margin-left: 32px;
+    margin-left: 35px;
 }
+
+/* COMPLETED TASKS */
+.task.complete .title{
+    text-decoration: line-through;
+    color: #777;
+}
+
+.task.task.complete {
+    opacity: 0.6;
+}
+
+
 
 .task .left, .task .right {
     display: flex;
@@ -251,6 +263,16 @@ span.date {
     display: flex;
     align-items: center;
     margin-bottom: 3px;    
+}
+
+.task.complete .check-button {
+    font-size: 22px;
+    padding-left: 4px;
+    color: #777
+}
+
+.task.complete .date {
+    color: #777;
 }
 
 .check-button:hover {

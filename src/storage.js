@@ -1,4 +1,35 @@
-import { Task, Project } from "./app";
+import { compareAsc, format } from "date-fns";
+
+class Task {
+    constructor(title, description = "", priority, dueDate, id = Date.now().toString(), completed = false) {
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.completed = completed;
+        this.id = id;
+    }
+
+    isOverdue() {
+        const currentDate = new Date().toISOString().slice(0, 10);
+        if (compareAsc(new Date(this.dueDate), new Date(currentDate)) == -1) {
+            return true;
+        } else return false;
+    }
+}
+
+class Project {
+    constructor(name, color = "#ffffff", id = Date.now().toString()) {
+        this.name = name;
+        this.color = color;
+        this.tasks = [];
+        this.id = id;
+    }
+
+    addTask(task) {
+        this.tasks.push(task)
+    }
+}
 
 const LOCAL_STORAGE_PROJECT_KEY = "doers.projects";
 const SELECTED_PROJECT_ID_KEY = "doers.selectedProjectId";
@@ -97,29 +128,57 @@ function getDefaultProjects() {
 export function setTask(title, description, priority, dueDate, id) {
     projects.forEach((project) => {
         if (project.id === getSelectedProjectId()) {
-            project.tasks.push(new Task(title, description, priority, dueDate, id));
+            project.tasks.push(
+                new Task(title, description, priority, dueDate, id)
+            );
         }
     });
 }
 
 export function getTask(id) {
-    const project = getProject()
-    return project.tasks.find(task => task.id === id)
+    const project = getProject();
+    return project.tasks.find((task) => task.id === id);
 }
 
+export function getTodayTasks() {
+    const tasks = []
+    const today = format(new Date(), 'yyyy-MM-dd')
+    projects.forEach(project => {
+        project.tasks.forEach(task => {
+            if (task.dueDate === today) {
+                tasks.push(task)
+            }
+        })
+    })
+    return tasks
+}
 
 export function deleteTask(id) {
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i];
         if (project.id === getSelectedProjectId()) {
-            project.tasks = project.tasks.filter(task => task.id !== id)
-            return
+            project.tasks = project.tasks.filter((task) => task.id !== id);
+            return;
         }
     }
 }
 
 export function editTask(id, title, description, priority, dueDate, projectId) {
-    deleteTask(id)
-    setSelectedProjectId(projectId)
-    setTask(title, description, priority, dueDate, id)
+    deleteTask(id);
+    setSelectedProjectId(projectId);
+    setTask(title, description, priority, dueDate, id);
+}
+
+export function toggleTaskComplete(taskId) {
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i]
+        if (project.id === getSelectedProjectId()) {
+            for (let j = 0; j < project.tasks.length; j++) {
+                const task = project.tasks[j]
+                if (task.id === taskId) {
+                    task.completed = (task.completed) ? false : true;
+                }
+            }
+        }
     }
+}

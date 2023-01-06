@@ -1,3 +1,6 @@
+const CHECKED_SYMBOL = '✓' // ✓ ✔
+const UNCHECKED_SYMBOL = '○'
+
 const newProjectName = document.getElementById("new-project-name");
 const newProjectColor = document.getElementById("new-project-color");
 const customProjectsContainer = document.querySelector(".custom-projects");
@@ -24,6 +27,7 @@ function renderProject(id = storage.getSelectedProjectId() || "0") {
 
     // Hide edit-project button if standart project is rendered
     if (project.id in ["0", "1", "2"]) {
+        if (project.id === "1") renderTodayTasks()
         editProjectBtn.classList.add("invisible");
     } else {
         editProjectBtn.classList.remove("invisible");
@@ -78,6 +82,24 @@ function renderTasks() {
         if (tasks[i].isOverdue()) {
             task.classList.add("overdue");
         }
+        if (tasks[i].completed) {
+            task.classList.add("complete")
+        }
+        taskContainer.appendChild(task);
+    }
+}
+
+function renderTodayTasks() {
+    const tasks = storage.getTodayTasks()
+    for (let i = 0; i < tasks.length; i++) {
+        const task = createTask(tasks[i]);
+        task.dataset.taskId = tasks[i].id;
+        if (tasks[i].isOverdue()) {
+            task.classList.add("overdue");
+        }
+        if (tasks[i].completed) {
+            task.classList.add("complete")
+        }
         taskContainer.appendChild(task);
     }
 }
@@ -95,7 +117,7 @@ function createTask(task) {
 
     newTask.innerHTML = `
     <div class="left">
-            <button class="check-button ${task.priority}">○</button>
+            <button class="check-button ${task.priority}">${(task.completed) ? CHECKED_SYMBOL : UNCHECKED_SYMBOL}</button>
             <span class="title">${task.title}</span>
         </div>
         <div class="right">
@@ -163,7 +185,6 @@ editTaskModal.addEventListener("submit", (e) => {
 	storage.save()
 	renderPage()
 });
-
 
 overlay.onclick = closeModals;
 
@@ -244,6 +265,11 @@ taskContainer.addEventListener('click', e => {
 		editTaskDescription.value = task.description
 		editTaskPriority.value = task.priority
 		renderEditProjectDropdown()
+	} else if (e.target.classList.contains('check-button')) {
+		selectedTaskId = e.target.parentNode.parentNode.dataset.taskId
+		storage.toggleTaskComplete(selectedTaskId)
+        storage.save()
+        renderPage()
 	}
 })
 
