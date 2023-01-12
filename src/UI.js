@@ -1,32 +1,37 @@
-const CHECKED_SYMBOL = "✓"; // ✓ ✔
-const UNCHECKED_SYMBOL = "○";
-let selectedTaskId = null;
+const CHECKED_SYMBOL = `<span class="material-symbols-outlined">
+check_circle
+</span>`;
+const UNCHECKED_SYMBOL = `<span class="material-symbols-outlined">
+circle
+</span>`;
+let currentTask = null;
+let selectedTaskProject = null;
 
 const newProjectName = document.getElementById("new-project-name");
 const newProjectColor = document.getElementById("new-project-color");
-const customProjectsContainer = document.querySelector(".custom-projects");
+const customProjects = document.querySelector(".custom-projects");
 const standartProjectsContainer = document.querySelector(".standart-projects");
 const overlay = document.querySelector(".overlay");
 const taskContainer = document.getElementById("task-container");
 const addTaskBtn = document.getElementById("add-task-btn");
-
-const editTaskTitle = document.getElementById("edit-task-title");
-const editTaskDescription = document.getElementById("edit-task-description");
-const editTaskDate = document.getElementById("edit-task-date");
-const editTaskPriority = document.getElementById("edit-task-priority");
-const editTaskProject = document.getElementById("edit-task-project");
+const newTaskDate = document.getElementById("new-task-date");
 
 const newProjectModal = document.getElementById("new-project-modal");
+const newTaskDescription = document.getElementById("new-task-description")
+const newTaskTitle = document.getElementById("new-task-title")
 const editProjectModal = document.getElementById("edit-project-modal");
 const addTaskModal = document.getElementById("add-task-modal");
 const editTaskModal = document.getElementById("edit-task-modal");
 const addProjectBtn = document.getElementById("add-project-btn");
-const editProjectBtn = document.getElementById("edit-project-btn");
 const deleteProjectBtn = document.getElementById("delete-project-btn");
 const saveProjectBtn = document.getElementById("save-project-btn");
 const editProjectName = document.getElementById("edit-project-name");
 const editProjectColor = document.getElementById("edit-project-color");
 
+const changePriorityBtn = document.getElementById("change-priority-btn");
+const priorityDropdown = document.getElementById("priority-dropdown");
+const changeTaskProjectBtn = document.getElementById("change-task-project-btn");
+const projectDropdown = document.getElementById("project-dropdown");
 
 import * as storage from "./storage.js";
 import { format, getWeek } from "date-fns";
@@ -37,16 +42,12 @@ function renderProject(id = storage.getSelectedProjectId() || "0") {
     clearElement(taskContainer);
     const project = storage.getProject(id);
 
-    // Hide edit-project button if standart project is rendered
     if (project.id in ["0", "1", "2"]) {
         if (project.id === "1") {
-            renderTodayTasks()
+            renderTodayTasks();
         } else if (project.id === "2") {
-            renderThisWeekTasks()
+            renderThisWeekTasks();
         }
-        editProjectBtn.classList.add("invisible");
-    } else {
-        editProjectBtn.classList.remove("invisible");
     }
 
     header.textContent = project.name;
@@ -68,7 +69,7 @@ function renderProjects() {
     }
 
     const projects = storage.getProjects();
-    clearElement(customProjectsContainer);
+    clearElement(customProjects);
     for (let i = 3; i < projects.length; i++) {
         const project = projects[i];
         const btn = document.createElement("button");
@@ -78,14 +79,11 @@ function renderProjects() {
             btn.classList.add("active");
         }
 
-        const projectColor = document.createElement("span");
-        projectColor.classList.add("project-color");
-        projectColor.textContent = "●";
-        projectColor.style.color = projects[i].color;
+        btn.innerHTML = `<div class="left"><span class="project-color" style="color: ${project.color};">●</span>${project.name}</div> <div class="right"><button data-project-id=${project.id} class="edit-project-btn hidden"><span class="material-symbols-outlined">
+        edit
+        </span></button></div>`;
 
-        btn.appendChild(projectColor);
-        btn.insertAdjacentText("beforeend", projects[i].name);
-        customProjectsContainer.appendChild(btn);
+        customProjects.appendChild(btn);
     }
 }
 
@@ -111,11 +109,11 @@ function renderTodayTasks() {
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i];
         for (let i = 0; i < project.tasks.length; i++) {
-            const task = project.tasks[i]
-            if (task.dueDate === format(new Date(), "yyyy-MM-dd")) {
+            const task = project.tasks[i];
+            if (task.dueDate === storage.getTodayDatestring()) {
                 const taskDiv = createTask(task);
                 taskDiv.dataset.taskId = task.id;
-                taskDiv.dataset.taskProjectId = project.id
+                taskDiv.dataset.taskProjectId = project.id;
                 if (task.isOverdue()) {
                     taskDiv.classList.add("overdue");
                 }
@@ -129,16 +127,16 @@ function renderTodayTasks() {
 }
 
 function renderThisWeekTasks() {
-    const projects = storage.getProjects()
+    const projects = storage.getProjects();
 
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i];
         for (let i = 0; i < project.tasks.length; i++) {
-            const task = project.tasks[i]
+            const task = project.tasks[i];
             if (getWeek(new Date()) === getWeek(new Date(task.dueDate))) {
                 const taskDiv = createTask(task);
                 taskDiv.dataset.taskId = task.id;
-                taskDiv.dataset.taskProjectId = project.id
+                taskDiv.dataset.taskProjectId = project.id;
                 if (task.isOverdue()) {
                     taskDiv.classList.add("overdue");
                 }
@@ -171,8 +169,8 @@ function createTask(task) {
         </div>
         <div class="right">
             <span class="date">${date}</span>
-            <button class="edit-task-btn"><img src="images/edit.svg" alt=""></button>
-            <button class="delete-task-btn"><img src="images/delete.svg" alt=""></button>
+            <button class="edit-task-btn icon-btn"><span class="material-symbols-outlined">edit</span></button>
+            <button class="delete-task-btn icon-btn"><span class="material-symbols-outlined">delete</span></button>
         </div>
         <div class="description">
             ${task.description}
@@ -202,9 +200,7 @@ function clearElement(element) {
 newProjectModal.addEventListener("submit", (e) => {
     e.preventDefault();
     const projectName = newProjectName.value;
-    if (projectName == null || projectName == "") return;
     const projectColor = newProjectColor.value;
-
     storage.setProject(projectName, projectColor);
     storage.save();
     renderProjects();
@@ -215,47 +211,23 @@ editProjectModal.addEventListener("submit", (e) => {
     e.preventDefault();
 });
 
-editTaskModal.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    storage.editTask(
-        selectedTaskId,
-        editTaskTitle.value,
-        editTaskDescription.value,
-        editTaskPriority.value,
-        editTaskDate.value,
-        editTaskProject.value
-    );
-    closeModals();
-    storage.save();
-    renderPage();
-});
-
 overlay.onclick = closeModals;
 
 function closeModals() {
     newProjectModal.reset();
     addTaskModal.reset();
-    overlay.classList.add("invisible");
-    newProjectModal.classList.add("invisible");
-    editProjectModal.classList.add("invisible");
-    addTaskModal.classList.add("invisible");
-    addTaskModal.classList.add("invisible");
-    editTaskModal.classList.add("invisible");
+    overlay.classList.add("hidden");
+    newProjectModal.classList.add("hidden");
+    editProjectModal.classList.add("hidden");
+    addTaskModal.classList.add("hidden");
+    addTaskModal.classList.add("hidden");
+    editTaskModal.classList.add("hidden");
 }
 
 addProjectBtn.onclick = function () {
-    overlay.classList.remove("invisible");
-    newProjectModal.classList.remove("invisible");
-};
-
-editProjectBtn.onclick = function () {
-    const project = storage.getProject(storage.getSelectedProjectId());
-    overlay.classList.remove("invisible");
-    editProjectModal.classList.remove("invisible");
-    editProjectName.value = project.name;
-
-    editProjectColor.value = project.color;
+    overlay.classList.remove("hidden");
+    newProjectModal.classList.remove("hidden");
+    newProjectName.focus()
 };
 
 deleteProjectBtn.onclick = function () {
@@ -276,22 +248,34 @@ saveProjectBtn.onclick = function () {
 };
 
 addTaskBtn.onclick = function () {
-    overlay.classList.remove("invisible");
-    addTaskModal.classList.remove("invisible");
-
+    currentTask = null
+    selectedTaskProject = storage.getSelectedProjectId()
+    overlay.classList.remove("hidden");
+    addTaskModal.classList.remove("hidden");
+    newTaskDate.value = storage.getTodayDatestring();
+    newTaskTitle.focus()
+    updatePriorityDropdown("null")
     renderProjectDropdown();
 };
 
 addTaskModal.addEventListener("submit", (e) => {
     e.preventDefault();
-    const title = document.getElementById("new-task-name").value;
+    const title = document.getElementById("new-task-title").value;
     const description = document.getElementById("new-task-description").value;
-    const priority = document.getElementById("new-task-priority").value;
-    const dueDate = document.getElementById("new-task-date").value;
-    storage.setTask(title, description, priority, dueDate);
-    storage.save();
-    closeModals();
-    renderPage();
+    const priority = changePriorityBtn.value;
+    const dueDate = newTaskDate.value;
+    const projectId = changeTaskProjectBtn.value
+    if (currentTask === null) {
+        storage.setTask(title, description, priority, dueDate, projectId);
+        storage.save();
+        closeModals();
+        renderPage();
+    } else {
+        storage.editTask(currentTask, title, description, priority, dueDate, projectId)
+        storage.save();
+        closeModals();
+        renderPage()
+    }
 });
 
 taskContainer.addEventListener("click", (e) => {
@@ -301,75 +285,93 @@ taskContainer.addEventListener("click", (e) => {
         storage.save();
         renderPage();
     } else if (e.target.classList.contains("edit-task-btn")) {
-        selectedTaskId = e.target.parentNode.parentNode.dataset.taskId;
-        const selectedTaskProject = e.target.parentNode.parentNode.dataset.taskProjectId
-        const task = storage.getTask(selectedTaskId);
-        overlay.classList.remove("invisible");
-        editTaskModal.classList.remove("invisible");
-        editTaskTitle.value = task.title;
-        editTaskDate.value = task.dueDate;
-        editTaskDescription.value = task.description;
-        editTaskPriority.value = task.priority;
-        renderEditProjectDropdown(selectedTaskProject);
+        currentTask = e.target.parentNode.parentNode.dataset.taskId;
+        selectedTaskProject =
+            storage.getTaskProject(currentTask)
+        const task = storage.getTask(currentTask);
+        overlay.classList.remove("hidden");
+        addTaskModal.classList.remove("hidden");
+        newTaskTitle.value = task.title;
+        newTaskDate.value = task.dueDate;
+        newTaskDescription.value = task.description;
+        newTaskTitle.focus()
+        updatePriorityDropdown(task.priority)
+        renderProjectDropdown()
     } else if (e.target.classList.contains("check-button")) {
-        selectedTaskId = e.target.parentNode.parentNode.dataset.taskId;
-        storage.toggleTaskComplete(selectedTaskId);
+        currentTask = e.target.parentNode.parentNode.dataset.taskId;
+        storage.toggleTaskComplete(currentTask);
         storage.save();
         renderPage();
     }
 });
 
 function renderProjectDropdown() {
-    const newTaskProject = document.getElementById("new-task-project");
-    clearElement(newTaskProject);
+    clearElement(projectDropdown);
+    const currentProject = storage.getProject(selectedTaskProject)
 
-    const inboxOption = document.createElement("option");
+    const inboxOption = document.createElement("button");
     inboxOption.value = "0";
-    inboxOption.textContent = "Inbox";
-    newTaskProject.appendChild(inboxOption);
+    inboxOption.type = "button";
+    inboxOption.innerHTML = `<span class="material-symbols-outlined" style="font-size: 20px">
+    inbox
+    </span>Inbox</button>`;
+    projectDropdown.appendChild(inboxOption);
 
     const projects = storage.getProjects();
     for (let i = 3; i < projects.length; i++) {
         const project = projects[i];
-        const option = document.createElement("option");
+        const option = document.createElement("button");
         option.value = project.id;
-        option.textContent = project.name;
+        option.type = "button";
+        option.innerHTML = `<span class="material-symbols-outlined color-icon" style="color: ${project.color};">
+        circle
+        </span>${project.name}</button>`;
+        projectDropdown.appendChild(option);
+    }
 
-        if (project.id === storage.getSelectedProjectId()) {
-            option.setAttribute("selected", "selected");
-        }
-        newTaskProject.appendChild(option);
+    changeTaskProjectBtn.value = selectedTaskProject
+    if (selectedTaskProject in ['0', '1', '2']) {
+        changeTaskProjectBtn.innerHTML = `<span class="material-symbols-outlined">inbox</span>Inbox`
+        changeTaskProjectBtn.value = '0'
+    } else {
+        changeTaskProjectBtn.innerHTML = `<span class="material-symbols-outlined color-icon" style="color: ${currentProject.color}">circle</span>${currentProject.name}`
+        changeTaskProjectBtn.value = selectedTaskProject
     }
 }
 
-function renderEditProjectDropdown(selectedProjectId) {
-    const editTaskProject = document.getElementById("edit-task-project");
-    clearElement(editTaskProject);
-
-    const inboxOption = document.createElement("option");
-    inboxOption.value = "0";
-    inboxOption.textContent = "Inbox";
-    editTaskProject.appendChild(inboxOption);
-
-    const projects = storage.getProjects();
-    for (let i = 3; i < projects.length; i++) {
-        const project = projects[i];
-        const option = document.createElement("option");
-        option.value = project.id;
-        option.textContent = project.name;
-
-        if (project.id === ( selectedProjectId || storage.getSelectedProjectId())) {
-            option.setAttribute("selected", "selected");
-        }
-        editTaskProject.appendChild(option);
-    }
-}
-
-customProjectsContainer.addEventListener("click", (e) => {
+customProjects.addEventListener("click", (e) => {
     if (e.target.tagName.toLowerCase() === "button") {
         storage.setSelectedProjectId(e.target.dataset.projectId);
         storage.save();
         renderPage();
+    }
+    if (e.target.matches(".edit-project-btn")) {
+        const project = storage.getProject(storage.getSelectedProjectId());
+        overlay.classList.remove("hidden");
+        editProjectModal.classList.remove("hidden");
+        editProjectName.value = project.name;
+        editProjectName.focus()
+        editProjectColor.value = project.color;
+    }
+});
+
+customProjects.addEventListener("mouseover", (e) => {
+    if (e.target.tagName.toLowerCase() === "button") {
+        document
+            .querySelector(
+                `button[data-project-id="${e.target.dataset.projectId}"] .edit-project-btn`
+            )
+            .classList.remove("hidden");
+    }
+});
+
+customProjects.addEventListener("mouseout", (e) => {
+    if (e.target.tagName.toLowerCase() === "button") {
+        document
+            .querySelector(
+                `button[data-project-id="${e.target.dataset.projectId}"] .edit-project-btn`
+            )
+            .classList.add("hidden");
     }
 });
 
@@ -381,3 +383,75 @@ standartProjectsContainer.addEventListener("click", (e) => {
         renderPage();
     }
 });
+
+changePriorityBtn.onclick = function () {
+    priorityDropdown.classList.toggle("hidden");
+};
+
+changeTaskProjectBtn.onclick = function () {
+    projectDropdown.classList.toggle("hidden");
+};
+
+projectDropdown.addEventListener("click", e => {
+    if (e.target.tagName.toLowerCase() === "button") {
+        const newProjectId = e.target.value
+        const project = storage.getProject(newProjectId)
+        changeTaskProjectBtn.value = newProjectId
+        if (newProjectId === '0') {
+            changeTaskProjectBtn.innerHTML = `<span class="material-symbols-outlined">inbox</span>Inbox`
+        } else {
+            changeTaskProjectBtn.innerHTML = `<span class="material-symbols-outlined color-icon" style="color: ${project.color}">circle</span>${project.name}`
+        }
+    }
+})
+
+priorityDropdown.addEventListener("click", (e) => {
+    if (e.target.tagName.toLowerCase() === "button") {
+        updatePriorityDropdown(e.target.value)
+    }
+});
+
+function updatePriorityDropdown(newPriority) {
+    const priorityIcon = document.querySelector(
+            "#change-priority-btn span"
+        );
+    changePriorityBtn.value = newPriority;
+        priorityIcon.classList.remove(
+            "priority-high",
+            "priority-low",
+            "priority-medium",
+            "priority-null"
+        );
+        priorityIcon.classList.add("priority-" + newPriority);
+}
+
+window.onclick = function (event) {
+    if (!event.target.matches(".dropbtn")) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            openDropdown.classList.add("hidden");
+        }
+    }
+};
+
+addTaskBtn.addEventListener("mouseover", () => {
+    document.querySelector("#add-task-btn span").textContent = "add_circle";
+});
+
+addTaskBtn.addEventListener("mouseout", () => {
+    document.querySelector("#add-task-btn span").textContent = "add";
+});
+
+document.getElementById('save-task-btn').addEventListener('click', () => {
+    if (newTaskTitle.validity.valueMissing) {
+        newTaskTitle.setCustomValidity("Fill in the title name.");
+    } else {
+        newTaskTitle.setCustomValidity("");
+    }
+})
+
+document.getElementById("new-task-cancel-btn").onclick = closeModals;
+document.getElementById("new-project-cancel-btn").onclick = closeModals
+document.getElementById("edit-task-cancel-btn").onclick = closeModals

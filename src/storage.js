@@ -125,11 +125,11 @@ function getDefaultProjects() {
     return projects;
 }
 
-export function setTask(title, description, priority, dueDate, id) {
+export function setTask(title, description, priority, dueDate, projectId, taskId) {
     projects.forEach((project) => {
-        if (project.id === getSelectedProjectId()) {
+        if (project.id === projectId) {
             project.tasks.push(
-                new Task(title, description, priority, dueDate, id)
+                new Task(title, description, priority, dueDate, taskId)
             );
         }
     });
@@ -145,6 +145,17 @@ export function getTask(id) {
         }
     }
     return project.tasks.find((task) => task.id === id);
+}
+
+export function getTaskProject(taskId) {
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i]
+        for (let j = 0; j < project.tasks.length; j++) {
+            if (project.tasks[j].id === taskId) {
+                return project.id
+            }
+        }
+    }
 }
 
 export function getTodayTasks() {
@@ -167,10 +178,10 @@ export function deleteTask(id) {
     }
 }
 
-export function editTask(id, title, description, priority, dueDate, projectId) {
-    deleteTask(id);
+export function editTask(taskId, title, description, priority, dueDate, projectId) {
+    deleteTask(taskId);
     setSelectedProjectId(projectId);
-    setTask(title, description, priority, dueDate, id);
+    setTask(title, description, priority, dueDate, projectId, taskId);
 }
 
 export function toggleTaskComplete(taskId) {
@@ -183,4 +194,8 @@ export function toggleTaskComplete(taskId) {
             }
         }
     }
+}
+
+export function getTodayDatestring() {
+    return format(new Date(), "yyyy-MM-dd")
 }

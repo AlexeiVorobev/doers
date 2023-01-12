@@ -1,121 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Doers</title>
+        <script src="main.js" defer></script>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,500;1,500&family=Roboto:wght@300;400;500;700&display=swap");
+        </style>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doers</title>
-    <script src="main.js" defer></script>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,500;1,500&family=Roboto:wght@300;400;500;700&display=swap');
-    </style>
-</head>
-
-<body>
-    <header>
-        <div class="logo">
-            <img src="images/done-all.svg" alt="">
-            <h1>Doers</h1>
-        </div>
-    </header>
-    <nav>
-        <div class="standart-projects">
-            <button id="inbox-btn" class="nav-button active" data-project-id="0"><img src="images/inbox.svg" alt="">Inbox</button>
-            <button id="today-btn" class="nav-button" data-project-id="1"><img src="images/today.svg" alt="">Today</button>
-            <button id="upcoming-btn" class="nav-button" data-project-id="2"><img src="images/calendar-month.svg" alt="">This week</button>
-        </div>
-        <div class="nav-projects">
-            <h1>Projects</h1> <button id="add-project-btn"><img src="images/add.svg" alt=""></button>
-        </div>
-        <div class="custom-projects"></div>
-    </nav>
-    <main>
-        <div id="content">
-            <div class="title-container">
-                <h1 id="project-title"></h1>
-                <button id="edit-project-btn" class="small-button"><img src="images/edit.svg" alt=""></button>
+    <body>
+        <header>
+            <div class="logo">
+                <span class="material-symbols-outlined">done_all</span>
+                <h1>Doers</h1>
             </div>
-            <div id="task-container"></div>
-            <button id="add-task-btn"><img src="images/add.svg" alt="">Add task</button>
-        </div>
-    </main>
+        </header>
+        <nav>
+            <div class="standart-projects">
+                <button
+                    id="inbox-btn"
+                    class="nav-button active"
+                    data-project-id="0"
+                >
+                    <span class="material-symbols-outlined">inbox</span>Inbox
+                </button>
+                <button id="today-btn" class="nav-button" data-project-id="1">
+                    <span class="material-symbols-outlined">today</span>Today
+                </button>
+                <button
+                    id="upcoming-btn"
+                    class="nav-button"
+                    data-project-id="2"
+                >
+                    <span class="material-symbols-outlined">date_range</span
+                    >This week
+                </button>
+            </div>
+            <div class="nav-projects">
+                <h1>Projects</h1>
+                <button id="add-project-btn" class="icon-btn">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+            </div>
+            <div class="custom-projects"></div>
+        </nav>
+        <main>
+            <div id="content">
+                <h1 id="project-title"></h1>
+                <div id="task-container"></div>
+                <button id="add-task-btn" class="icon-btn">
+                    <span class="material-symbols-outlined"> add </span> Add
+                    task
+                </button>
+            </div>
+        </main>
 
-    <div class="overlay invisible"></div>
+        <div class="overlay hidden"></div>
 
-    <form class="modal invisible" action="" id="new-project-modal">
-        <h1>Add project</h1>
-        <label for="new-project-name">Name</label>
-        <input type="text" class="new project" placeholder="new project name" id="new-project-name">
-        <label for="new-project-color">Color</label>
-        <input type="color" name="" id="new-project-color" value="#ffffff">
-        <button type="submit">Add</button>
-    </form>
+        <form class="modal hidden" action="" id="new-project-modal">
+            <h1>Add project</h1>
+            <label for="new-project-name">Name</label>
+            <input
+                type="text"
+                class="new project"
+                placeholder="New project name"
+                id="new-project-name"
+                required
+            />
+            <label for="new-project-color">Color</label>
+            <input
+                type="color"
+                name=""
+                id="new-project-color"
+                value="#ffffff"
+            />
+            <div class="button-panel">
+                <button
+                    class="modal-btn"
+                    id="new-project-cancel-btn"
+                    type="button"
+                >
+                    Cancel
+                </button>
+                <button class="modal-btn special" type="submit">Add</button>
+            </div>
+        </form>
 
-    <form class="modal invisible" action="" id="edit-project-modal">
-        <h1>Edit project</h1>
-        <label for="new-project-name">Name</label>
-        <input type="text" class="new project" placeholder="New project name" id="edit-project-name">
-        <label for="edit-project-color">Color</label>
-        <input type="color" name="" id="edit-project-color" value="#ffffff">
-        <div class="button-panel">
-            <button id="delete-project-btn" class="special">Delete</button>
-            <button id="save-project-btn" type="submit">Save</button>
-        </div>
-    </form>
+        <form class="modal hidden" action="" id="edit-project-modal">
+            <h1>Edit project</h1>
+            <label for="new-project-name">Name</label>
+            <input
+                type="text"
+                class="new project"
+                placeholder="New project name"
+                id="edit-project-name"
+            />
+            <label for="edit-project-color">Color</label>
+            <input
+                type="color"
+                name=""
+                id="edit-project-color"
+                value="#ffffff"
+            />
+            <div class="button-panel">
+                <button id="delete-project-btn" class="modal-btn">
+                    Delete
+                </button>
+                <button
+                    id="save-project-btn"
+                    type="submit"
+                    class="modal-btn special"
+                >
+                    Save
+                </button>
+            </div>
+        </form>
 
-    <form action="" class="modal invisible" id="add-task-modal">
-        <h1>Add Task</h1>
-        <label for="new-task-name">Title</label>
-        <input type="text" placeholder="New task title" id="new-task-name" required>
-        <label for="new-task-description">Description</label>
-        <input type="text" id="new-task-description" placeholder="Task description">
-        <label for="new-task-date">Due date</label>
-        <input type="date" name="" id="new-task-date">
-        <label for="new-task-priority">Priority</label>
-        <select name="" id="new-task-priority">
-            <option value="null">No priority</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-        <label for="new-task-project">Project</label>
-        <select name="" id="new-task-project">
-            <option value="0">Inbox</option>
-        </select>
+        <form action="" class="modal hidden" id="add-task-modal">
+            <input
+                class="header"
+                type="text"
+                placeholder="Title"
+                id="new-task-title"
+                required
+            />
+            <input
+                type="text"
+                id="new-task-description"
+                placeholder="Description"
+            />
+            <div class="control-panel">
+                <input type="date" name="" id="new-task-date" />
+                <div class="dropdown">
+                    <button
+                        value="0"
+                        class="dropbtn"
+                        type="button"
+                        id="change-task-project-btn"
+                    >
+                        <span class="material-symbols-outlined">inbox</span
+                        >Inbox
+                    </button>
+                    <div class="dropdown-content" id="project-dropdown"></div>
+                </div>
 
-        <div class="button-panel">
-            <button id="save-task-btn">Save</button>
-        </div>
+                <div class="dropdown">
+                    <button
+                        value="null"
+                        class="icon-btn dropbtn"
+                        type="button"
+                        id="change-priority-btn"
+                    >
+                        <span class="material-symbols-outlined priority-null">
+                            flag
+                        </span>
+                    </button>
+                    <div
+                        class="priority dropdown-content hidden"
+                        id="priority-dropdown"
+                    >
+                        <button value="high" type="button">
+                            <span
+                                class="material-symbols-outlined priority-high"
+                            >
+                                flag </span
+                            >High
+                        </button>
+                        <button value="medium" type="button">
+                            <span
+                                class="material-symbols-outlined priority-medium"
+                            >
+                                flag </span
+                            >Medium
+                        </button>
+                        <button value="low" type="button">
+                            <span
+                                class="material-symbols-outlined priority-low"
+                            >
+                                flag </span
+                            >Low
+                        </button>
+                        <button value="null" type="button">
+                            <span
+                                class="material-symbols-outlined priority-null"
+                            >
+                                flag </span
+                            >No priority
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-    </form>
+            <div class="button-panel">
+                <button
+                    class="modal-btn"
+                    id="new-task-cancel-btn"
+                    type="button"
+                >
+                    Cancel
+                </button>
+                <button class="modal-btn special" id="save-task-btn">
+                    Save
+                </button>
+            </div>
+        </form>
 
-    <form action="" class="modal invisible" id="edit-task-modal">
-        <h1>Edit Task</h1>
-        <label for="edit-task-title">title</label>
-        <input type="text" placeholder="New task title" id="edit-task-title" required>
-        <label for="edit-task-description">Description</label>
-        <input type="text" id="edit-task-description" placeholder="Task description">
-        <label for="edit-task-date">Due date</label>
-        <input type="date" name="" id="edit-task-date">
-        <label for="edit-task-priority">Priority</label>
-        <select name="" id="edit-task-priority">
-            <option value="null">No priority</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-        <label for="edit-task-project">Project</label>
-        <select name="" id="edit-task-project">
-            <option value="0">Inbox</option>
-        </select>
+        <form action="" class="modal hidden" id="edit-task-modal">
+            <input
+                class="header"
+                type="text"
+                placeholder="Title"
+                id="edit-task-title"
+                required
+            />
+            <input
+                type="text"
+                id="edit-task-description"
+                placeholder="Description"
+            />
+            <div class="control-panel">
+                <input type="date" name="" id="edit-task-date" />
+                <div class="dropdown">
+                    <button
+                        value="0"
+                        class="dropbtn"
+                        type="button"
+                        id="change-task-project-btn"
+                    >
+                        <span class="material-symbols-outlined">inbox</span
+                        >Inbox
+                    </button>
+                    <div class="dropdown-content" id="project-dropdown"></div>
+                </div>
 
-        <div class="button-panel">
-            <button id="save-edit-task-btn">Save</button>
-        </div>
+                <div class="dropdown">
+                    <button
+                        value="null"
+                        class="icon dropbtn"
+                        type="button"
+                        id="change-priority-btn"
+                    >
+                        <span class="material-symbols-outlined priority-null">
+                            flag
+                        </span>
+                    </button>
+                    <div
+                        class="priority dropdown-content hidden"
+                        id="priority-dropdown-edit"
+                    >
+                        <button value="high" type="button">
+                            <span
+                                class="material-symbols-outlined priority-high"
+                            >
+                                flag </span
+                            >High
+                        </button>
+                        <button value="medium" type="button">
+                            <span
+                                class="material-symbols-outlined priority-medium"
+                            >
+                                flag </span
+                            >Medium
+                        </button>
+                        <button value="low" type="button">
+                            <span
+                                class="material-symbols-outlined priority-low"
+                            >
+                                flag </span
+                            >Low
+                        </button>
+                        <button value="null" type="button">
+                            <span
+                                class="material-symbols-outlined priority-null"
+                            >
+                                flag </span
+                            >No priority
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-    </form>
-</body>
-
+            <div class="button-panel">
+                <button
+                    class="modal-btn"
+                    id="edit-task-cancel-btn"
+                    type="button"
+                >
+                    Cancel
+                </button>
+                <button class="modal-btn special" id="edit-task-save-btn">
+                    Save
+                </button>
+            </div>
+        </form>
+    </body>
 </html>
