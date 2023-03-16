@@ -90,6 +90,10 @@ button {
     text-align: left;
 }
 
+button div.left {
+    pointer-events: none;
+}
+
 .nav-button {
     gap: 6px;
     display: flex;
