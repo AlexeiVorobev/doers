@@ -100,7 +100,13 @@ button div.left {
     align-items: center;
     font-size: 18px;
     width: 100%;
+    height: 40px;
     padding: 8px var(--margin-xs);
+}
+
+.nav-button .left {
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .custom-projects .nav-button {
