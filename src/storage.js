@@ -33,7 +33,6 @@ class Project {
 
 const LOCAL_STORAGE_PROJECT_KEY = "doers.projects";
 const SELECTED_PROJECT_ID_KEY = "doers.selectedProjectId";
-// let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY)) || getDefaultProjects()
 let projects = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECT_KEY))
     ? loadProjects()
     : getDefaultProjects();
@@ -122,6 +121,9 @@ function getDefaultProjects() {
     projects.push(new Project("Inbox", null, "0"));
     projects.push(new Project("Today", null, "1"));
     projects.push(new Project("This week", null, "2"));
+    projects.push(new Project("Coding", "#4571d9", "10"));
+    projects.push(new Project("Work", "#d94745", '11'));
+    projects.push(new Project("Personal", "#8a45d9", '12'));
     return projects;
 }
 
