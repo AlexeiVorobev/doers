@@ -231,10 +231,12 @@ addProjectBtn.onclick = function () {
 };
 
 deleteProjectBtn.onclick = function () {
-    storage.deleteProject();
-    closeModals();
-    storage.setSelectedProjectId("0");
-    renderPage();
+    if (confirm("Are you sure you want to delete the project? All todos inside a project will be gone forever.")) {
+        storage.deleteProject();
+        closeModals();
+        storage.setSelectedProjectId("0");
+        renderPage();
+    }
 };
 
 saveProjectBtn.onclick = function () {
