@@ -1,2 +1,2 @@
-# todo-list
+# Doers
 Todo list app build with native JavaScript.
