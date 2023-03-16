@@ -21,7 +21,7 @@ select:-webkit-autofill:focus {
 :root {
     --primary-color: rgb(49, 53, 58);
     --margin-s: 20px;
-    --margin-xs: 10px;
+    --margin-xs: 8px;
     --icon-s: 24px;
     --text-small: 12px;
     --text-h1: 22px;
@@ -33,7 +33,7 @@ select:-webkit-autofill:focus {
 
 body {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 260px 1fr;
     grid-template-rows: 80px 1fr;
     height: 100vh;
 }
@@ -75,7 +75,7 @@ main #content {
 
 /* NAV */
 nav {
-    padding: var(--margin-s) var(--margin-s);
+    padding: var(--margin-s);
     background-color: #ddd;
 }
 
@@ -100,12 +100,12 @@ button div.left {
     align-items: center;
     font-size: 18px;
     width: 100%;
-    padding: 8px var(--margin-s);
+    padding: 8px var(--margin-xs);
 }
 
 .custom-projects .nav-button {
     justify-content: space-between;
-    padding: 2px var(--margin-s);
+    padding: 2px var(--margin-xs);
 }
 
 button.active,
