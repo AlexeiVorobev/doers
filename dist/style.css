@@ -529,12 +529,12 @@ input {
     }
 
     nav {
-        z-index: 2;
+        z-index: 1;
         position: absolute;
         display: none;
-        top: 50px;
+        padding-top: 55px;
         width: 260px;
-        height: calc(100% - 50px);
+        height: 100vh;
         left: 0;
     }
 
