@@ -7,11 +7,15 @@ circle
 let currentTask = null;
 let selectedTaskProject = null;
 
+const navbar = document.querySelector('nav');
 const newProjectName = document.getElementById("new-project-name");
 const newProjectColor = document.getElementById("new-project-color");
 const customProjects = document.querySelector(".custom-projects");
 const standartProjectsContainer = document.querySelector(".standart-projects");
+
 const overlay = document.querySelector(".overlay");
+const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
 const taskContainer = document.getElementById("task-container");
 const addTaskBtn = document.getElementById("add-task-btn");
 const newTaskDate = document.getElementById("new-task-date");
@@ -37,6 +41,7 @@ import * as storage from "./storage.js";
 import { format, getWeek } from "date-fns";
 
 const header = document.getElementById("project-title");
+const toggleMenuBtn = document.querySelector('.toggle-menu-btn');
 
 function renderProject(id = storage.getSelectedProjectId() || "0") {
     clearElement(taskContainer);
@@ -457,3 +462,18 @@ document.getElementById('save-task-btn').addEventListener('click', () => {
 document.getElementById("new-task-cancel-btn").onclick = closeModals;
 document.getElementById("new-project-cancel-btn").onclick = closeModals
 document.getElementById("edit-task-cancel-btn").onclick = closeModals
+sidebarOverlay.onclick = function() {
+    navbar.classList.remove('active');
+    sidebarOverlay.classList.add('hidden');
+}
+
+toggleMenuBtn.onclick = function() {
+    if (navbar.classList.contains('active')) {
+        navbar.classList.remove('active') // Hide navbar
+        sidebarOverlay.classList.add('hidden');
+    } else {
+        closeModals();
+        navbar.classList.add('active'); // Show navbar
+        sidebarOverlay.classList.remove('hidden')
+    }
+}
