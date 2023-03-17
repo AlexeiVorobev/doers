@@ -170,7 +170,7 @@ function createTask(task) {
             <button class="check-button ${task.priority}">${
     task.completed ? CHECKED_SYMBOL : UNCHECKED_SYMBOL
   }</button>
-            <span class="title">${task.title}</span>
+            <span class="title check-button">${task.title}</span>
         </div>
         <div class="right">
             <span class="date">${date}</span>
