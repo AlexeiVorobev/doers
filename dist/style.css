@@ -171,7 +171,7 @@ h1 {
 
 /* CONTENT */
 #content {
-    padding: var(--margin-s);
+    padding: var(--margin-s) 30px;
 }
 
 #content h1 {
