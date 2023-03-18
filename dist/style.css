@@ -88,6 +88,7 @@ main #content {
 nav {
     padding: var(--margin-s);
     background-color: #ddd;
+    
 }
 
 button {
@@ -544,16 +545,17 @@ button.nav-button.active button.edit-project-btn.hidden {
 
     nav {
         z-index: 1;
-        position: absolute;
-        display: none;
+        position: fixed;
+        left: -280px;
         padding-top: 55px;
-        width: 260px;
+        width: 280px;
         height: 100vh;
-        left: 0;
+        transition: left 0.3s ease-out;
     }
 
     nav.active {
         display: block;
+        left: 0;
     }
 
     form.modal {
