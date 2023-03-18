@@ -20,7 +20,7 @@ select:-webkit-autofill:focus {
 
 :root {
     --primary-color: rgb(49, 53, 58);
-    --margin-s: 20px;
+    --margin-s: 16px;
     --margin-xs: 8px;
     --icon-s: 24px;
     --text-small: 12px;
@@ -502,6 +502,7 @@ input {
 .toggle-menu-btn {
     width: fit-content;
     padding: 10px;
+    margin-left: 6px;
     display: none;
 }
 
@@ -546,9 +547,9 @@ button.nav-button.active button.edit-project-btn.hidden {
     nav {
         z-index: 1;
         position: fixed;
-        left: -280px;
+        left: -260px;
         padding-top: 55px;
-        width: 280px;
+        width: 260px;
         height: 100vh;
         transition: left 0.3s ease-out;
     }
