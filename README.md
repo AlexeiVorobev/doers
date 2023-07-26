@@ -1,5 +1,5 @@
 # Doers
-This is a simple, yet super cool responsive ToDo List app created using HTML, CSS, and JavaScript. The app allows users to create projects and tasks, set task priorities and due dates, and mark tasks as completed.
+This is a simple, responsive ToDo List app created using HTML, CSS, and JavaScript. The app allows users to create projects and tasks, set task priorities and due dates, and mark tasks as completed.
 
 <a href="https://alexvorobevv.github.io/doers/dist/" target="_blank">Live Preview</a>
 
